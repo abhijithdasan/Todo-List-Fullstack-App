@@ -5,7 +5,7 @@ import { BsCircleFill, BsFillCheckCircleFill, BsFillTrashFill, BsSun, BsMoon } f
 import './App.css';
 
 // Setting the base URL for axios requests
-axios.defaults.baseURL = 'https://marx-todo.vercel.app';
+axios.defaults.baseURL = 'http://localhost:3001';
 
 export default function Home() {
   const [todos, setTodos] = useState([]);
@@ -47,7 +47,7 @@ export default function Home() {
 
   const handleAdd = async (task) => {
     try {
-      const response = await axios.post('/add', { task });
+      const response = await axios.post('/api/todos', { task });
       setTodos(prevTodos => [...prevTodos, response.data]);
     } catch (err) {
       console.error('Error adding todo:', err);
