@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 
 export default function Create({ setTodos }) {
   const [task, setTask] = useState('');
@@ -7,7 +8,7 @@ export default function Create({ setTodos }) {
   const handleAdd = () => {
     if (task.trim() === '') return;
 
-    axios.post('http://localhost:3001/add', { task })
+    axios.post('http://localhost:3001/api/todos', { task })
       .then(response => {
         setTodos(prevTodos => [...prevTodos, response.data]);
         setTask('');
@@ -34,3 +35,7 @@ export default function Create({ setTodos }) {
     </div>
   );
 }
+
+Create.propTypes = {
+  setTodos: PropTypes.func.isRequired,
+};
