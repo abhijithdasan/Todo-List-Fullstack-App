@@ -1,7 +1,7 @@
-require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -14,7 +14,7 @@ app.use(cors());
 const mongoURI = process.env.MONGO_URI;
 console.log('MongoDB URI:', mongoURI);
 
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(mongoURI)
   .then(() => console.log('MongoDB connected'))
   .catch(error => console.error('MongoDB connection error:', error));
 
@@ -46,7 +46,7 @@ app.post('/api/todos', async (req, res) => {
   try {
     const savedTodo = await newTodo.save();
     console.log('Todo saved:', savedTodo);
-    res.status(201).json(savedTodo);
+    res.status(201).json(savedTodo); // Ensure this is returning the saved todo
   } catch (error) {
     console.error('Error saving todo:', error);
     res.status(500).json({ message: 'Error saving todo' });

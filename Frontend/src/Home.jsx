@@ -49,7 +49,7 @@ export default function Home() {
     try {
       const response = await axios.post('/api/todos', { task });
       console.log('Todo added:', response.data); // Debugging output
-      setTodos(prevTodos => [...prevTodos, response.data]);
+      setTodos(prevTodos => [...prevTodos, response.data]); // Update state with new todo
     } catch (err) {
       console.error('Error adding todo:', err);
     }
