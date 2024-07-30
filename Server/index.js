@@ -32,19 +32,24 @@ app.get('/api/todos', async (req, res) => {
     const todos = await TodoModel.find();
     res.json(todos);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Error fetching todos:', error);
+    res.status(500).json({ message: 'Error fetching todos' });
   }
 });
 
 app.post('/api/todos', async (req, res) => {
   const { task } = req.body;
+  console.log('Received task:', task);
+
   const newTodo = new TodoModel({ task });
 
   try {
     const savedTodo = await newTodo.save();
+    console.log('Todo saved:', savedTodo);
     res.status(201).json(savedTodo);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Error saving todo:', error);
+    res.status(500).json({ message: 'Error saving todo' });
   }
 });
 
