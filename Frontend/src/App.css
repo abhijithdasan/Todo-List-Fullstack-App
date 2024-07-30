@@ -92,6 +92,38 @@
     color: white;
 }
 
+.edit_form {
+  display: flex;
+    margin-bottom: 20px;
+  
+}
+
+.edit_form input {
+  width: 200px;
+    padding: 10px;
+    border: 1px solid #ccc; 
+    border-radius: 5px 5px;
+    outline: none;
+}
+
+.edit_form button {
+  margin-left: 1px;
+  padding: 10px 15px;
+    background-color: rgb(64, 175, 244);
+    color: white;
+    border: none;
+    border-radius:  5px 5px ;
+    cursor: pointer;
+}
+
+.edit_form button.dark {
+  background-color: #4CAF50;
+}
+
+.edit .icon{
+  margin-right: 8px;
+}
+
 .checkbox {
     display: flex;
     align-items: center;
