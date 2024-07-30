@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import Create from './Create';
 import axios from 'axios';
-import { BsCircleFill, BsFillCheckCircleFill, BsFillTrashFill, BsSun, BsMoon } from 'react-icons/bs';
+import { BsCircleFill, BsFillCheckCircleFill, BsFillTrashFill, BsSun, BsMoon, BsFillPencilFill } from 'react-icons/bs';
 import './App.css';
 
-// Setting the base URL for axios requests
 axios.defaults.baseURL = 'http://localhost:3001';
 
 export default function Home() {
@@ -12,8 +11,8 @@ export default function Home() {
   const [theme, setTheme] = useState('light');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [editingTodo, setEditingTodo] = useState(null);
 
-  // Fetch todos from the backend
   useEffect(() => {
     const fetchTodos = async () => {
       setIsLoading(true);
@@ -21,7 +20,6 @@ export default function Home() {
         const response = await axios.get('/api/todos');
         setTodos(response.data);
       } catch (error) {
-        console.error('Error fetching todos:', error);
         setError('Failed to fetch todos. Please try again.');
       } finally {
         setIsLoading(false);
@@ -38,7 +36,6 @@ export default function Home() {
         todo._id === id ? response.data : todo
       ));
     } catch (err) {
-      console.error('Error updating todo:', err);
       setError('Failed to update todo. Please try again.');
     }
   };
@@ -48,7 +45,6 @@ export default function Home() {
       await axios.delete(`/api/todos/${id}`);
       setTodos(prevTodos => prevTodos.filter(todo => todo._id !== id));
     } catch (err) {
-      console.error('Error deleting todo:', err);
       setError('Failed to delete todo. Please try again.');
     }
   };
@@ -56,11 +52,21 @@ export default function Home() {
   const handleAdd = async (task) => {
     try {
       const response = await axios.post('/api/todos', { task });
-      console.log('Todo added:', response.data); // Debugging output
-      setTodos(prevTodos => [...prevTodos, response.data]); // Update state with new todo
+      setTodos(prevTodos => [...prevTodos, response.data]);
     } catch (err) {
-      console.error('Error adding todo:', err);
       setError('Failed to add todo. Please try again.');
+    }
+  };
+
+  const handleUpdate = async (id, updatedTask) => {
+    try {
+      const response = await axios.put(`/api/todos/${id}`, { task: updatedTask });
+      setTodos(prevTodos => prevTodos.map(todo =>
+        todo._id === id ? response.data : todo
+      ));
+      setEditingTodo(null); // Clear editing state
+    } catch (err) {
+      setError('Failed to update todo. Please try again.');
     }
   };
 
@@ -80,9 +86,7 @@ export default function Home() {
       ) : error ? (
         <div>Error: {error}</div>
       ) : todos.length === 0 ? (
-        <div>
-          <h3>No Record</h3>
-        </div>
+        <div><h3>No Record</h3></div>
       ) : (
         todos.map(todo => (
           <div className={`task ${theme}`} key={todo._id}>
@@ -95,12 +99,23 @@ export default function Home() {
               <p className={todo.done ? "line_through" : ""}>{todo.task}</p>
             </div>
             <div>
-              <span>
-                <BsFillTrashFill className={`icon ${theme}`} onClick={() => handleDelete(todo._id)} />
-              </span>
-            </div> 
+              <span className='edit'> 
+              <BsFillPencilFill className= {`icon ${theme}`} onClick={() => setEditingTodo(todo)} /></span>
+              <BsFillTrashFill className={`icon ${theme}`} onClick={() => handleDelete(todo._id)} />
+            </div>
           </div>
         ))
+      )}
+      {editingTodo && (
+        <div className='edit_form'>
+          <input
+            type='text'
+            value={editingTodo.task}
+            onChange={(e) => setEditingTodo({ ...editingTodo, task: e.target.value })}
+          />
+          <button onClick={() => handleUpdate(editingTodo._id, editingTodo.task)}>Update</button>
+          <button onClick={() => setEditingTodo(null)}>Cancel</button>
+        </div>
       )}
     </div>
   );
