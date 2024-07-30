@@ -10,7 +10,8 @@ export default function Create({ setTodos }) {
 
     try {
       const response = await axios.post('/api/todos', { task });
-      setTodos(prevTodos => [...prevTodos, response.data]);
+      console.log('Todo added:', response.data); // Debugging output
+      setTodos(prevTodos => [...prevTodos, response.data]); // Update state with new todo
       setTask(''); // Clear the input field
     } catch (error) {
       console.error('Error adding todo:', error);

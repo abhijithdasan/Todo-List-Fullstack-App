@@ -48,6 +48,7 @@ export default function Home() {
   const handleAdd = async (task) => {
     try {
       const response = await axios.post('/api/todos', { task });
+      console.log('Todo added:', response.data); // Debugging output
       setTodos(prevTodos => [...prevTodos, response.data]);
     } catch (err) {
       console.error('Error adding todo:', err);
@@ -64,15 +65,15 @@ export default function Home() {
         {theme === 'light' ? <BsMoon /> : <BsSun />}
       </div>
       <h2>TODO LIST</h2>
-      <Create setTodos={handleAdd} theme={theme} /> 
+      <Create setTodos={handleAdd} theme={theme} />
       {
         todos.length === 0 ? (
           <div>
-            <h3>No Record</h3> 
-          </div> 
+            <h3>No Record</h3>
+          </div>
         ) : (
           todos.map(todo => (
-            <div className={`task ${theme}`} key={todo._id}> 
+            <div className={`task ${theme}`} key={todo._id}>
               <div className='checkbox' onClick={() => handleEdit(todo._id, todo.done)}>
                 {todo.done ? 
                   <BsFillCheckCircleFill className={`icon ${theme}`} />

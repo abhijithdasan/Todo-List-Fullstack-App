@@ -53,7 +53,6 @@ app.post('/api/todos', async (req, res) => {
   }
 });
 
-// PUT - Update a todo
 app.put('/api/todos/:id', async (req, res) => {
   try {
     const updatedTodo = await TodoModel.findByIdAndUpdate(
@@ -72,7 +71,6 @@ app.put('/api/todos/:id', async (req, res) => {
   }
 });
 
-// DELETE - Delete a todo
 app.delete('/api/todos/:id', async (req, res) => {
   try {
     const deletedTodo = await TodoModel.findByIdAndDelete(req.params.id);
