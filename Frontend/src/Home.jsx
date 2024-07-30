@@ -27,7 +27,7 @@ export default function Home() {
 
   const handleEdit = async (id, currentDoneState) => {
     try {
-      const response = await axios.put(`/update/${id}`, { done: !currentDoneState });
+      const response = await axios.put(`/api/todos/${id}`, { done: !currentDoneState });
       setTodos(prevTodos => prevTodos.map(todo => 
         todo._id === id ? response.data : todo
       ));
@@ -38,7 +38,7 @@ export default function Home() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/delete/${id}`);
+      await axios.delete(`/api/todos/${id}`);
       setTodos(prevTodos => prevTodos.filter(todo => todo._id !== id));
     } catch (err) {
       console.error('Error deleting todo:', err);
@@ -93,4 +93,3 @@ export default function Home() {
     </div>
   );
 }
- 

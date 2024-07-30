@@ -5,15 +5,16 @@ import PropTypes from 'prop-types';
 export default function Create({ setTodos }) {
   const [task, setTask] = useState('');
 
-  const handleAdd = () => {
+  const handleAdd = async () => {
     if (task.trim() === '') return;
 
-    axios.post('http://localhost:3001/api/todos', { task })
-      .then(response => {
-        setTodos(prevTodos => [...prevTodos, response.data]);
-        setTask('');
-      })
-      .catch(error => console.error('Error adding todo:', error));
+    try {
+      const response = await axios.post('/api/todos', { task });
+      setTodos(prevTodos => [...prevTodos, response.data]);
+      setTask(''); // Clear the input field
+    } catch (error) {
+      console.error('Error adding todo:', error);
+    }
   };
 
   const handleKeyPress = (event) => {

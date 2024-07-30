@@ -53,6 +53,40 @@ app.post('/api/todos', async (req, res) => {
   }
 });
 
+// PUT - Update a todo
+app.put('/api/todos/:id', async (req, res) => {
+  try {
+    const updatedTodo = await TodoModel.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true }
+    );
+    if (!updatedTodo) {
+      return res.status(404).json({ message: 'Todo not found' });
+    }
+    console.log('Todo updated:', updatedTodo);
+    res.json(updatedTodo);
+  } catch (error) {
+    console.error('Error updating todo:', error);
+    res.status(500).json({ message: 'Error updating todo' });
+  }
+});
+
+// DELETE - Delete a todo
+app.delete('/api/todos/:id', async (req, res) => {
+  try {
+    const deletedTodo = await TodoModel.findByIdAndDelete(req.params.id);
+    if (!deletedTodo) {
+      return res.status(404).json({ message: 'Todo not found' });
+    }
+    console.log('Todo deleted:', deletedTodo);
+    res.json({ message: 'Todo deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting todo:', error);
+    res.status(500).json({ message: 'Error deleting todo' });
+  }
+});
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
