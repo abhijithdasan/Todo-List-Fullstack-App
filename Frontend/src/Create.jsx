@@ -1,20 +1,13 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import PropTypes from 'prop-types';
 
-export default function Create({ setTodos }) {
+export default function Create({ onAdd, theme }) {
   const [task, setTask] = useState('');
 
-  const handleAdd = async () => {
+  const handleAdd = () => {
     if (task.trim() === '') return;
-
-    try {
-      const response = await axios.post('/api/todos', { task });
-      setTodos(prevTodos => [...prevTodos, response.data]); // Update parent component state
-      setTask(''); // Clear the input field
-    } catch (error) {
-      console.error('Error adding todo:', error);
-    }
+    onAdd(task);
+    setTask('');
   };
 
   const handleKeyPress = (event) => {
@@ -31,12 +24,14 @@ export default function Create({ setTodos }) {
         onChange={(e) => setTask(e.target.value)}
         onKeyPress={handleKeyPress}
         placeholder='Enter a new task'
+        className={theme}
       />
-      <button onClick={handleAdd}>Add</button>
+      <button onClick={handleAdd} className={theme}>Add</button>
     </div>
   );
 }
 
 Create.propTypes = {
-  setTodos: PropTypes.func.isRequired,
+  onAdd: PropTypes.func.isRequired,
+  theme: PropTypes.string.isRequired,
 };
