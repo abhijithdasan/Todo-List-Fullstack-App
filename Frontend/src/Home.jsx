@@ -4,7 +4,7 @@ import axios from 'axios';
 import { BsCircleFill, BsFillCheckCircleFill, BsFillTrashFill, BsSun, BsMoon, BsFillPencilFill } from 'react-icons/bs';
 import './App.css';
 
-axios.defaults.baseURL = process.env.REACT_APP_API_URL || 'http://localhost:3001';
+axios.defaults.baseURL = process.env.REACT_APP_API_URL || '/api';
 
 export default function Home() {
   const [todos, setTodos] = useState([]);

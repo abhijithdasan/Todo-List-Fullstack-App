@@ -9,7 +9,7 @@ const port = process.env.PORT || 3001;
 // Middleware
 app.use(express.json());
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5137'
+  origin: process.env.VERCEL_URL || 'http://localhost:5137'
 }));
 
 // MongoDB connection
