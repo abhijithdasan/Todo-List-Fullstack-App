@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import Create from './Create';
 import axios from 'axios';
 import { BsCircleFill, BsFillCheckCircleFill, BsFillTrashFill, BsSun, BsMoon, BsFillPencilFill } from 'react-icons/bs';
@@ -13,23 +13,25 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [editingTodo, setEditingTodo] = useState(null);
 
-  useEffect(() => {
-    const fetchTodos = async () => {
-      setIsLoading(true);
-      try {
-        const response = await axios.get('/api/todos');
-        setTodos(response.data);
-      } catch (error) {
-        setError('Failed to fetch todos. Please try again.');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchTodos();
+  const fetchTodos = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await axios.get('/api/todos');
+      setTodos(response.data);
+    } catch (error) {
+      setError('Failed to fetch todos. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
 
-  const handleEdit = async (id, currentDoneState) => {
+  useEffect(() => {
+    fetchTodos();
+  }, [fetchTodos]);
+
+  const handleEdit = useCallback(async (id, currentDoneState) => {
+    setError(null);
     try {
       const response = await axios.put(`/api/todos/${id}`, { done: !currentDoneState });
       setTodos(prevTodos => prevTodos.map(todo => 
@@ -38,46 +40,59 @@ export default function Home() {
     } catch (err) {
       setError('Failed to update todo. Please try again.');
     }
-  };
+  }, []);
 
-  const handleDelete = async (id) => {
+  const handleDelete = useCallback(async (id) => {
+    setError(null);
     try {
       await axios.delete(`/api/todos/${id}`);
       setTodos(prevTodos => prevTodos.filter(todo => todo._id !== id));
     } catch (err) {
       setError('Failed to delete todo. Please try again.');
     }
-  };
+  }, []);
 
-  const handleAdd = async (task) => {
+  const handleAdd = useCallback(async (task) => {
+    setError(null);
     try {
       const response = await axios.post('/api/todos', { task });
-      setTodos(prevTodos => [...prevTodos, response.data]);
+      setTodos(prevTodos => [response.data, ...prevTodos]);
     } catch (err) {
       setError('Failed to add todo. Please try again.');
     }
-  };
+  }, []);
 
-  const handleUpdate = async (id, updatedTask) => {
+  const handleUpdate = useCallback(async (id, updatedTask) => {
+    setError(null);
     try {
       const response = await axios.put(`/api/todos/${id}`, { task: updatedTask });
       setTodos(prevTodos => prevTodos.map(todo =>
         todo._id === id ? response.data : todo
       ));
-      setEditingTodo(null); // Clear editing state
+      setEditingTodo(null);
     } catch (err) {
       setError('Failed to update todo. Please try again.');
     }
-  };
+  }, []);
 
-  const toggleTheme = () => {
-    setTheme(theme === 'light' ? 'dark' : 'light');
+  const toggleTheme = useCallback(() => {
+    setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
+  }, []);
+
+  const sortedTodos = useMemo(() => {
+    return [...todos].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  }, [todos]);
+
+  const handleEditKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleUpdate(editingTodo._id, editingTodo.task);
+    }
   };
 
   return (
     <div className={`home ${theme}`}>
       <div className='theme-toggle' onClick={toggleTheme}>
-        {theme === 'light' ? <BsMoon /> : <BsSun />}
+        {theme === 'light' ? <BsMoon aria-label="Switch to dark mode" /> : <BsSun aria-label="Switch to light mode" />}
       </div>
       <h2>TODO LIST</h2>
       <Create onAdd={handleAdd} theme={theme} />
@@ -85,23 +100,24 @@ export default function Home() {
         <div>Loading...</div>
       ) : error ? (
         <div>Error: {error}</div>
-      ) : todos.length === 0 ? (
+      ) : sortedTodos.length === 0 ? (
         <div><h3>No Record</h3></div>
       ) : (
-        todos.map(todo => (
+        sortedTodos.map(todo => (
           <div className={`task ${theme}`} key={todo._id}>
             <div className='checkbox' onClick={() => handleEdit(todo._id, todo.done)}>
               {todo.done ? 
-                <BsFillCheckCircleFill className={`icon ${theme}`} />
+                <BsFillCheckCircleFill className={`icon ${theme}`} aria-label="Mark as undone" />
               : 
-                <BsCircleFill className={`icon ${theme}`} />
+                <BsCircleFill className={`icon ${theme}`} aria-label="Mark as done" />
               }
               <p className={todo.done ? "line_through" : ""}>{todo.task}</p>
             </div>
             <div>
               <span className='edit'> 
-              <BsFillPencilFill className= {`icon ${theme}`} onClick={() => setEditingTodo(todo)} /></span>
-              <BsFillTrashFill className={`icon ${theme}`} onClick={() => handleDelete(todo._id)} />
+                <BsFillPencilFill className={`icon ${theme}`} onClick={() => setEditingTodo(todo)} aria-label="Edit todo" />
+              </span>
+              <BsFillTrashFill className={`icon ${theme}`} onClick={() => handleDelete(todo._id)} aria-label="Delete todo" />
             </div>
           </div>
         ))
@@ -112,6 +128,8 @@ export default function Home() {
             type='text'
             value={editingTodo.task}
             onChange={(e) => setEditingTodo({ ...editingTodo, task: e.target.value })}
+            onKeyPress={handleEditKeyPress}
+            aria-label="Edit todo task"
           />
           <button onClick={() => handleUpdate(editingTodo._id, editingTodo.task)}>Update</button>
           <button onClick={() => setEditingTodo(null)}>Cancel</button>

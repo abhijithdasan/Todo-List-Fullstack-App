@@ -20,16 +20,16 @@ mongoose.connect(mongoURI)
 
 // Todo Schema
 const todoSchema = new mongoose.Schema({
-  task: { type: String, required: true },
+  task: { type: String, required: true, trim: true },
   done: { type: Boolean, default: false }
-});
+}, { timestamps: true });
 
 const TodoModel = mongoose.model('Todo', todoSchema);
 
 // Routes
 app.get('/api/todos', async (req, res) => {
   try {
-    const todos = await TodoModel.find();
+    const todos = await TodoModel.find().sort({ createdAt: -1 });
     res.json(todos);
   } catch (error) {
     console.error('Error fetching todos:', error);
@@ -39,14 +39,15 @@ app.get('/api/todos', async (req, res) => {
 
 app.post('/api/todos', async (req, res) => {
   const { task } = req.body;
-  console.log('Received task:', task);
+  if (!task || task.trim() === '') {
+    return res.status(400).json({ message: 'Task is required' });
+  }
 
   const newTodo = new TodoModel({ task });
 
   try {
     const savedTodo = await newTodo.save();
-    console.log('Todo saved:', savedTodo);
-    res.status(201).json(savedTodo); // Ensure this is returning the saved todo
+    res.status(201).json(savedTodo);
   } catch (error) {
     console.error('Error saving todo:', error);
     res.status(500).json({ message: 'Error saving todo' });
@@ -54,16 +55,14 @@ app.post('/api/todos', async (req, res) => {
 });
 
 app.put('/api/todos/:id', async (req, res) => {
+  const { id } = req.params;
+  const update = req.body;
+
   try {
-    const updatedTodo = await TodoModel.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
+    const updatedTodo = await TodoModel.findByIdAndUpdate(id, update, { new: true, runValidators: true });
     if (!updatedTodo) {
       return res.status(404).json({ message: 'Todo not found' });
     }
-    console.log('Todo updated:', updatedTodo);
     res.json(updatedTodo);
   } catch (error) {
     console.error('Error updating todo:', error);
@@ -72,18 +71,22 @@ app.put('/api/todos/:id', async (req, res) => {
 });
 
 app.delete('/api/todos/:id', async (req, res) => {
+  const { id } = req.params;
+
   try {
-    const deletedTodo = await TodoModel.findByIdAndDelete(req.params.id);
+    const deletedTodo = await TodoModel.findByIdAndDelete(id);
     if (!deletedTodo) {
       return res.status(404).json({ message: 'Todo not found' });
     }
-    console.log('Todo deleted:', deletedTodo);
-    res.json({ message: 'Todo deleted successfully' });
+    res.json({ message: 'Todo deleted successfully', id });
   } catch (error) {
     console.error('Error deleting todo:', error);
     res.status(500).json({ message: 'Error deleting todo' });
   }
 });
+
+// Health check route
+app.get('/health', (req, res) => res.status(200).send('OK'));
 
 // Start the server
 app.listen(port, () => {
