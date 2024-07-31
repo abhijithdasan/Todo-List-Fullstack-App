@@ -152,10 +152,6 @@
     color: #fff;
 }
 
-.task .edit .icon {
-    margin-right: 0;
-}
-
 .empty-todo-list {
     display: flex;
     flex-direction: column;
