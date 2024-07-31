@@ -94,33 +94,38 @@ export default function Home() {
       <div className='theme-toggle' onClick={toggleTheme}>
         {theme === 'light' ? <BsMoon aria-label="Switch to dark mode" /> : <BsSun aria-label="Switch to light mode" />}
       </div>
-      <h2>TODO LIST</h2>
-      <Create onAdd={handleAdd} theme={theme} />
+      <h2 className="heading">TODO LIST</h2>
       {isLoading ? (
         <div>Loading...</div>
       ) : error ? (
         <div>Error: {error}</div>
       ) : sortedTodos.length === 0 ? (
-        <div><h3>No Record</h3></div>
+        <div className="empty-todo-list">
+          <Create onAdd={handleAdd} theme={theme} />
+          <h3>No Record</h3>
+        </div>
       ) : (
-        sortedTodos.map(todo => (
-          <div className={`task ${theme}`} key={todo._id}>
-            <div className='checkbox' onClick={() => handleEdit(todo._id, todo.done)}>
-              {todo.done ? 
-                <BsFillCheckCircleFill className={`icon ${theme}`} aria-label="Mark as undone" />
-              : 
-                <BsCircleFill className={`icon ${theme}`} aria-label="Mark as done" />
-              }
-              <p className={todo.done ? "line_through" : ""}>{todo.task}</p>
+        <>
+          <Create onAdd={handleAdd} theme={theme} />
+          {sortedTodos.map(todo => (
+            <div className={`task ${theme}`} key={todo._id}>
+              <div className='checkbox' onClick={() => handleEdit(todo._id, todo.done)}>
+                {todo.done ? 
+                  <BsFillCheckCircleFill className={`icon ${theme}`} aria-label="Mark as undone" />
+                : 
+                  <BsCircleFill className={`icon ${theme}`} aria-label="Mark as done" />
+                }
+                <p className={todo.done ? "line_through" : ""}>{todo.task}</p>
+              </div>
+              <div>
+                <span className='edit'> 
+                  <BsFillPencilFill className={`icon ${theme}`} onClick={() => setEditingTodo(todo)} aria-label="Edit todo" />
+                </span>
+                <BsFillTrashFill className={`icon ${theme}`} onClick={() => handleDelete(todo._id)} aria-label="Delete todo" />
+              </div>
             </div>
-            <div>
-              <span className='edit'> 
-                <BsFillPencilFill className={`icon ${theme}`} onClick={() => setEditingTodo(todo)} aria-label="Edit todo" />
-              </span>
-              <BsFillTrashFill className={`icon ${theme}`} onClick={() => handleDelete(todo._id)} aria-label="Delete todo" />
-            </div>
-          </div>
-        ))
+          ))}
+        </>
       )}
       {editingTodo && (
         <div className='edit_form'>
@@ -131,8 +136,8 @@ export default function Home() {
             onKeyPress={handleEditKeyPress}
             aria-label="Edit todo task"
           />
-          <button onClick={() => handleUpdate(editingTodo._id, editingTodo.task)}>Update</button>
-          <button onClick={() => setEditingTodo(null)}>Cancel</button>
+          <button className="update-btn" onClick={() => handleUpdate(editingTodo._id, editingTodo.task)}>Update</button>
+          <button className='cancel-btn' onClick={() => setEditingTodo(null)}>Cancel</button>
         </div>
       )}
     </div>
