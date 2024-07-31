@@ -43,7 +43,7 @@ A full-stack TODO list application built with React (frontend) and Node.js/Expre
     Create a `.env` file in the `Server` directory with the following content:
 
     ```env
-    MONGODB_URI=mongodb+srv://abhijithdasan:password@2018@cluster0.fm78y8t.mongodb.net/?retryWrites=true&w=majority
+    MONGODB_URI=mongodb+srv://<username>:<password></password>cluster0.fm78y8t.mongodb.net/?retryWrites=true&w=majority
     ```
 
 4. Run the backend server:
