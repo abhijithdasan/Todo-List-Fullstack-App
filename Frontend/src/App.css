@@ -152,17 +152,17 @@
     color: #fff;
 }
 
-.task div .icon {
-    cursor: pointer;
+.task .edit .icon {
+    margin-right: 0;
 }
 
 .empty-todo-list {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    height: 100vh; /* Ensure it takes the full viewport height */
-    text-align: center; /* Center the text horizontally */
+    justify-content: center; 
+    height: 100vh; 
+    text-align: center; 
 }
 
 @media (max-width: 480px) {

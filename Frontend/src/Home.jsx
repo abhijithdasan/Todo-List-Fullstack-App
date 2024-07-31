@@ -94,18 +94,19 @@ export default function Home() {
       <div className='theme-toggle' onClick={toggleTheme}>
         {theme === 'light' ? <BsMoon aria-label="Switch to dark mode" /> : <BsSun aria-label="Switch to light mode" />}
       </div>
-      <h2 className="heading">TODO LIST</h2>
       {isLoading ? (
         <div>Loading...</div>
       ) : error ? (
         <div>Error: {error}</div>
       ) : sortedTodos.length === 0 ? (
         <div className="empty-todo-list">
+          <h2 className="heading">TODO LIST</h2>
           <Create onAdd={handleAdd} theme={theme} />
           <h3>No Record</h3>
         </div>
       ) : (
         <>
+          <h2 className="heading">TODO LIST</h2>
           <Create onAdd={handleAdd} theme={theme} />
           {sortedTodos.map(todo => (
             <div className={`task ${theme}`} key={todo._id}>
