@@ -139,6 +139,9 @@
     text-decoration: line-through;
 }
 
+.icon{
+    cursor: pointer;
+}
 .checkbox .icon {
     margin-right: 10px;
     font-size: 18px;
@@ -146,6 +149,7 @@
 
 .icon.light {
     color: #333;
+    
 }
 
 .icon.dark {
