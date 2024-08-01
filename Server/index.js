@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
@@ -8,9 +9,7 @@ const port = process.env.PORT || 3001;
 
 // Middleware
 app.use(express.json());
-app.use(cors({
-  origin: process.env.VERCEL_URL || 'http://localhost:5137'
-}));
+app.use(cors());
 
 // MongoDB connection
 const mongoURI = process.env.MONGO_URI;
@@ -87,8 +86,12 @@ app.delete('/api/todos/:id', async (req, res) => {
   }
 });
 
-// Health check route
-app.get('/health', (req, res) => res.status(200).send('OK'));
+// Serve static files from the React frontend app
+app.use(express.static(path.join(__dirname, '../frontend/build')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
+});
 
 // Start the server
 app.listen(port, () => {
