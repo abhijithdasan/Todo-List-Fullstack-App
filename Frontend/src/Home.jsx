@@ -4,7 +4,7 @@ import axios from 'axios';
 import { BsCircleFill, BsFillCheckCircleFill, BsFillTrashFill, BsSun, BsMoon, BsFillPencilFill } from 'react-icons/bs';
 import './App.css';
 
-axios.defaults.baseURL = 'http://localhost:3001';
+axios.defaults.baseURL = 'https://todo-app-server-we6b.onrender.com';
 
 export default function Home() {
   const [todos, setTodos] = useState([]);
