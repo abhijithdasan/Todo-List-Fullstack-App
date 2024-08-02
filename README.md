@@ -21,15 +21,16 @@ A full-stack TODO list application built with React (frontend) and Node.js/Expre
 
 - Node.js and npm installed
 - MongoDB Atlas account
-- Vercel account
+- Netlify account (for frontend deployment)
+- Render account (for backend deployment)
 
 ### Backend Setup
 
 1. Clone the repository:
 
     ```bash
-    git clone https://github.com/your-username/todo-list.git
-    cd todo-list/Server
+    git clone https://github.com/abhijithdasan/Todo-List-Fullstack-App.git
+    cd Todo-List-Fullstack-App/Server
     ```
 
 2. Install dependencies:
@@ -43,7 +44,8 @@ A full-stack TODO list application built with React (frontend) and Node.js/Expre
     Create a `.env` file in the `Server` directory with the following content:
 
     ```env
-    MONGODB_URI=mongodb+srv://<username>:<password></password>cluster0.fm78y8t.mongodb.net/?retryWrites=true&w=majority
+    MONGO_URI=mongodb+srv://<username>:<password>@cluster0.fm78y8t.mongodb.net/todo-list?retryWrites=true&w=majority
+    PORT=3001
     ```
 
 4. Run the backend server:
@@ -57,7 +59,7 @@ A full-stack TODO list application built with React (frontend) and Node.js/Expre
 1. Navigate to the frontend directory:
 
     ```bash
-    cd ../todo-list
+    cd ../Frontend
     ```
 
 2. Install dependencies:
@@ -74,37 +76,35 @@ A full-stack TODO list application built with React (frontend) and Node.js/Expre
 
 ### Deployment
 
-#### Deploying Backend to Vercel
+#### Deploying Backend to Render
 
-1. Install the Vercel CLI:
+1. Deploy the backend:
 
-    ```bash
-    npm install -g vercel
-    ```
+    - Push your code to GitHub.
+    - Go to Render's dashboard.
+    - Create a new Web Service.
+    - Connect your GitHub repository and select the `Server` folder.
+    - Set environment variables in Render's settings:
+        - `MONGO_URI`: Your MongoDB connection string
+        - `PORT`: `3001`
 
-2. Deploy the backend:
+2. After deployment, your backend will be available at `https://todo-app-server-we6b.onrender.com/`.
 
-    ```bash
-    cd ../Server
-    vercel
-    ```
-
-3. Set up environment variables on Vercel:
-
-    - Go to your project in the Vercel dashboard.
-    - Click on the “Settings” tab.
-    - Click on “Environment Variables”.
-    - Add a new environment variable with the key `MONGODB_URI` and the value from your `.env` file.
-
-#### Deploying Frontend to Vercel
+#### Deploying Frontend to Netlify
 
 1. Deploy the frontend:
 
-    ```bash
-    cd ../todo-list
-    vercel
-    ```
+    - Push your code to GitHub.
+    - Go to Netlify's dashboard.
+    - Create a new site from Git.
+    - Connect your GitHub repository and select the `Frontend` folder.
+
+2. After deployment, your frontend will be available at `https://marx-list.netlify.app/`.
 
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Repository
+
+You can find the source code for this project on [GitHub](https://github.com/abhijithdasan/Todo-List-Fullstack-App).
