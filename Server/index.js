@@ -7,11 +7,9 @@ require('dotenv').config();
 const app = express();
 const port = process.env.PORT || 3001;
 
-// Middleware
 app.use(express.json());
 app.use(cors());
 
-// MongoDB connection
 const mongoURI = process.env.MONGO_URI;
 console.log('MongoDB URI:', mongoURI);
 
@@ -19,7 +17,6 @@ mongoose.connect(mongoURI)
   .then(() => console.log('MongoDB connected'))
   .catch(error => console.error('MongoDB connection error:', error));
 
-// Todo Schema
 const todoSchema = new mongoose.Schema({
   task: { type: String, required: true, trim: true },
   done: { type: Boolean, default: false }
@@ -27,7 +24,6 @@ const todoSchema = new mongoose.Schema({
 
 const TodoModel = mongoose.model('Todo', todoSchema);
 
-// Routes
 app.get('/api/todos', async (req, res) => {
   try {
     const todos = await TodoModel.find().sort({ createdAt: -1 });
@@ -86,14 +82,12 @@ app.delete('/api/todos/:id', async (req, res) => {
   }
 });
 
-// Serve static files from the React frontend app
 app.use(express.static(path.join(__dirname, '../frontend/build')));
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/build', 'index.html'));
 });
 
-// Start the server
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
